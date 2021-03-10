@@ -1,13 +1,10 @@
 <template> 
   <div id="main">
-     <Header title="喵喵电影"></Header>
-     <!-- <div id="wrapp"> -->
-         <keep-alive>
-      <router-view/>
-  </keep-alive>
-     <!-- </div> -->
-    
- <Footer></Footer>
+      <Header title="喵喵电影"></Header>
+        <keep-alive>
+          <router-view/>
+        </keep-alive> 
+      <Footer></Footer>
   </div>
  
     
@@ -25,11 +22,6 @@ export default {
 }
 </script>
 <style>
-/*   #wrapp {
-   
-        overflow: auto;
-         flex:1;
-    } */
   html, body {
     height: 100%;
     overflow: hidden;
