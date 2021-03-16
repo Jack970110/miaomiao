@@ -66,7 +66,6 @@ export default {
         return newlist
     },
     handleClick(id,name){
-      console.log(id)
       localStorage.setItem("cityId",id);
       localStorage.setItem("cityName",encodeURIComponent(name));
       this.$router.push(`/cinema`)
