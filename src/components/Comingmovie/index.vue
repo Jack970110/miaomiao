@@ -37,15 +37,17 @@ export default {
                 'X-Host': 'mall.film-ticket.film.list'
             }
         }).then((res)=>{
-            console.log( res.data);
             this.cominglist = res.data.data.films;
         })
     },
      methods:{
          toData(data){
-            var d = new Date(data + 1614528000000); 
-            return d.toLocaleDateString();
-            }
+            var d = new Date(); 
+            var year = d.getFullYear();
+            var month = d.getMonth();
+            var data1 = new Date(Date.UTC(year, month, 0, 0, 0, 0) + data);
+            return data1.toLocaleDateString();
+         }
      }
 }
 </script>
