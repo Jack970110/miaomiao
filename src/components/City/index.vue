@@ -1,28 +1,28 @@
 <template>
     <div class="city_body">
         <div class="city_list">
-            
-   
-            <mt-index-list >
-                <div class="city_hot">
-                    <h2>热门城市</h2>
-                    <ul class="clearfix">
-                        <li>上海</li>
-                        <li>北京</li>
-                        <li>上海</li>
-                        <li>北京</li>
-                        <li>上海</li>
-                        <li>北京</li>
-                    </ul>
-                </div> 
-                <mt-index-section :index="data.index" v-for="data in datalist" :key="data.index">
-                    <div  @click="handleClick(city.cityId,city.name)" v-for="city in data.list" :key="city.cityId">
-                    <mt-cell :title="city.name">
-                    </mt-cell>
-                    </div>
-                </mt-index-section>
+                <Loading v-if="isLoading"/>
+                <mt-index-list v-else>
+                    <div class="city_hot">
+                        <h2>热门城市</h2>
+                        <ul class="clearfix">
+                            <li>上海</li>
+                            <li>北京</li>
+                            <li>上海</li>
+                            <li>北京</li>
+                            <li>上海</li>
+                            <li>北京</li>
+                        </ul>
+                    </div> 
+                    <mt-index-section :index="data.index" v-for="data in datalist" :key="data.index">
+                        <div  @click="handleToCity(city.name,city.cityId)" v-for="city in data.list" :key="city.cityId">
+                        <mt-cell :title="city.name">
+                        </mt-cell>
+                        </div>
+                    </mt-index-section>
+                      
+                </mt-index-list>
 
-            </mt-index-list>
         </div>
 	</div>
 </template>
@@ -31,7 +31,8 @@ export default {
     name : 'city',
     data(){
         return {
-        datalist:[]
+        datalist:[],
+        isLoading : true
         }
      },
 
@@ -43,8 +44,9 @@ export default {
                 'X-Host': 'mall.film-ticket.city.list'
             }
         }).then((res)=>{
-            this.datalist = this.handleCity(res.data.data.cities)
-        })
+            this.datalist = this.handleCity(res.data.data.cities);
+            this.isLoading = false;
+        })  
     },
     methods:{
     handleCity(datalist){
@@ -65,11 +67,12 @@ export default {
         }
         return newlist
     },
-    handleClick(id,name){
-      localStorage.setItem("cityId",id);
-      localStorage.setItem("cityName",encodeURIComponent(name));
-      this.$router.push(`/cinema`)
-    }
+    handleToCity(name,cityId){
+            this.$store.commit('city/CITY_INFO',{ name , cityId });
+            window.localStorage.setItem('nowNm',name);
+            window.localStorage.setItem('nowId',cityId);
+            this.$router.push('/movie/nowPlaying');
+        }
   }
 }
 </script>

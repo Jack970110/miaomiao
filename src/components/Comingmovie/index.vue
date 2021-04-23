@@ -1,19 +1,22 @@
 <template>
     <div class="movie_body">
-        <ul>
-            <li v-for="data in cominglist" :key="data.filmId">
-                <div class="pic_show"><img :src="data.poster"></div>
-                <div class="info_list">
-                    <h2>{{data.name}} <img v-if="data.filmType.name =='3D'" src="@/assets/maxs.png" alt=""></h2>
-                    <p>主演:{{data.actors | actorfilter}}</p>
-                    <p>{{data.nation}}</p>
-                    <p>上映时间：{{toData(data.premiereAt)}}</p>
-                </div>
-                <div class="btn_pre">
-                    预售
-                </div>
-            </li>
-        </ul>    
+        <Loading v-if="isLoading"/>
+        <Scroller v-else>
+            <ul>
+                <li v-for="data in cominglist" :key="data.filmId">
+                    <div class="pic_show"><img :src="data.poster"></div>
+                    <div class="info_list">
+                        <h2>{{data.name}} <img v-if="data.filmType.name =='3D'" src="@/assets/maxs.png" alt=""></h2>
+                        <p>主演:{{data.actors | actorfilter}}</p>
+                        <p>{{data.nation}}</p>
+                        <p>上映时间：{{toData(data.premiereAt)}}</p>
+                    </div>
+                    <div class="btn_pre">
+                        预售
+                    </div>
+                </li>
+            </ul>
+        </Scroller>    
     </div>
 </template>
 <script>
@@ -26,18 +29,27 @@ Vue.filter('actorfilter', function (data) {
 export default {
     name : 'comingmovie',data(){
         return {
-        cominglist:[]
+        cominglist:[],
+        isLoading : true,
+        prevId : -1
         }
      },
-    mounted (){
+    activated (){
+        var cityId = this.$store.state.city.cityId;
+        if(this.prevId === cityId){
+            return;
+        }
+        this.isLoading = true;
         this.axios({
-            url :"https://m.maizuo.com/gateway?cityId=310100&pageNum=1&pageSize=10&type=2&k=3399862",
+            url :"https://m.maizuo.com/gateway?cityId="+cityId+"&pageNum=1&pageSize=10&type=2&k=3399862",
             headers :{
                 'X-Client-Info': '{"a":"3000","ch":"1002","v":"5.0.4","e":"16153825561462956055330817"}',
                 'X-Host': 'mall.film-ticket.film.list'
             }
         }).then((res)=>{
             this.cominglist = res.data.data.films;
+            this.isLoading = false;
+            this.prevId = cityId;
         })
     },
      methods:{
